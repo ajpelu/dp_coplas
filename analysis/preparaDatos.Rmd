@@ -1,6 +1,8 @@
 ---
 title: "preparaDatos"
 output: html_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 
@@ -10,7 +12,6 @@ library("here")
 # library("sf")
 # library("wellknown")
 library("xlsx")
-
 ```
 
 
@@ -28,7 +29,9 @@ mof <- mof %>% pivot_wider(names_from = year, values_from = infesta)
 
 
 df <- parcelas %>% dplyr::select(
-  id_rodal, provincia, municipio, x, y, area_m2, elev_centroide = alt_centro, elev_min = minimo, elev_max = maximo, elev_mean =promedio) %>% inner_join(mof, by= "id_rodal") %>% 
+  id_rodal, provincia, municipio, x, y, area_m2, elev_centroide = alt_centro, elev_min = minimo, elev_max = maximo, elev_mean =promedio) %>% inner_join(mof, by= "id_rodal")
+
+df %>% 
   write.xlsx2(here::here("data_raw/datos_coplas_2015.xlsx"))
 ```
 
