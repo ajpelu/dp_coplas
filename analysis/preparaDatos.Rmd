@@ -1,0 +1,37 @@
+---
+title: "preparaDatos"
+output: html_document
+---
+
+
+```{r}
+library("tidyverse")
+library("here")
+# library("sf")
+# library("wellknown")
+library("xlsx")
+
+```
+
+
+```{r}
+parcelas <- read_csv(here::here("/data_raw/dp_coplas_parcela.csv"))
+mof <- read_csv(here::here("/data_raw/dp_coplas_measurementorfacts.csv")) 
+evento <- read_csv(here::here("/data_raw/dp_coplas_evento.csv")) 
+eventcore <- read_csv(here::here("/data_raw/dp_coplas_eventcore.csv")) 
+
+
+mof <- read_csv(here::here("/data_raw/dp_coplas_measurementorfacts.csv")) %>% 
+  mutate(id_rodal = gsub("-.*", "\\1", eventid)) %>% 
+  dplyr::select(id_rodal, infesta = measurementvalue, year = measurementdetermineddate)
+mof <- mof %>% pivot_wider(names_from = year, values_from = infesta)
+
+
+df <- parcelas %>% dplyr::select(
+  id_rodal, provincia, municipio, x, y, area_m2, elev_centroide = alt_centro, elev_min = minimo, elev_max = maximo, elev_mean =promedio) %>% inner_join(mof, by= "id_rodal") %>% 
+  write.xlsx2(here::here("data_raw/datos_coplas_2015.xlsx"))
+```
+
+
+ 
+
